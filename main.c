@@ -52,18 +52,32 @@ void list_free(node_t **list) {
 int main(int argc, char **argv) {
     size_t count = 20;
     srandom(time(NULL));
-    node_t *list = NULL;
+    int randNum;
+    node_t *list1 = NULL, *list2 = NULL;
     while (count--) {
-        list = list_make_node_t(list, random() % 1024);
+        randNum = random();
+        list1 = list_make_node_t(list1, randNum % 1024);
+        list2 = list_make_node_t(list2, randNum % 1024);
     }
 
-    list_display(list);
-    quicksort(&list);
-    list_display(list);
+    list_display(list1);
+    struct timespec start, end;
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    quicksort_nonrecursive(list1);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    list_display(list1);
+    printf("which takes %ld.%06ld nanoseconds\n", end.tv_sec - start.tv_sec, end.tv_nsec - start.tv_nsec);
+    list_display(list2);
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    quicksort(&list2);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    list_display(list2);
+    printf("which takes %ld.%06ld nanoseconds\n", end.tv_sec - start.tv_sec, end.tv_nsec - start.tv_nsec);
 
-    if (!list_is_ordered(list))
+    if (!list_is_ordered(list1) || !list_is_ordered(list2))
         return EXIT_FAILURE;
 
-    list_free(&list);
+    list_free(&list1);
+    list_free(&list2);
     return EXIT_SUCCESS;
 }        
