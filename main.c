@@ -51,7 +51,7 @@ void list_free(node_t **list) {
 
 int main(int argc, char **argv) {
     size_t count = 20;
-
+    srandom(time(NULL));
     node_t *list = NULL;
     while (count--) {
         list = list_make_node_t(list, random() % 1024);
