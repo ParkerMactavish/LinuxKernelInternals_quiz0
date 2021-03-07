@@ -1,0 +1,3 @@
+[submodule "linux-list"]
+	path = linux-list
+	url = https://github.com/ParkerMactavish/linux-list.git
