@@ -51,6 +51,8 @@ void list_free(node_t **list) {
 
 int main(int argc, char **argv) {
     size_t count = 20;
+    if (argc > 1)
+        count = atoi(argv[1]);
     srandom(time(NULL));
     int randNum;
     node_t *list1 = NULL, *list2 = NULL;
@@ -61,18 +63,33 @@ int main(int argc, char **argv) {
     }
 
     list_display(list1);
-    struct timespec start, end;
+    struct timespec start, end, diff;
     clock_gettime(CLOCK_MONOTONIC, &start);
     quicksort_nonrecursive(list1);
     clock_gettime(CLOCK_MONOTONIC, &end);
     list_display(list1);
-    printf("which takes %ld.%06ld nanoseconds\n", end.tv_sec - start.tv_sec, end.tv_nsec - start.tv_nsec);
+    if ((end.tv_nsec-start.tv_nsec)<0) {
+        diff.tv_sec = end.tv_sec - start.tv_sec - 1;
+        diff.tv_nsec = 1000000000 + end.tv_nsec - start.tv_nsec;
+    } else {
+        diff.tv_sec = end.tv_sec-start.tv_sec;
+        diff.tv_nsec = end.tv_nsec-start.tv_nsec;
+    }
+    printf("which takes %ld.%09ld seconds\n", diff.tv_sec, diff.tv_nsec);
     list_display(list2);
     clock_gettime(CLOCK_MONOTONIC, &start);
     quicksort(&list2);
     clock_gettime(CLOCK_MONOTONIC, &end);
     list_display(list2);
-    printf("which takes %ld.%06ld nanoseconds\n", end.tv_sec - start.tv_sec, end.tv_nsec - start.tv_nsec);
+    if ((end.tv_nsec-start.tv_nsec)<0) {
+        diff.tv_sec = end.tv_sec - start.tv_sec - 1;
+        diff.tv_nsec = 1000000000 + end.tv_nsec - start.tv_nsec;
+    } else {
+        diff.tv_sec = end.tv_sec-start.tv_sec;
+        diff.tv_nsec = end.tv_nsec-start.tv_nsec;
+    }
+    printf("which takes %ld.%09ld seconds\n", diff.tv_sec, diff.tv_nsec);
+    list_display(list2);
 
     if (!list_is_ordered(list1) || !list_is_ordered(list2))
         return EXIT_FAILURE;
